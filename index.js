@@ -20,7 +20,7 @@ async function getCurrentObj(location) {
     const currentObj = await jsonData.current;
     return currentObj;
   } catch {
-    throw new Error('get current obj fails!');
+    console.log('get current obj fails!');
   }
 }
 
@@ -30,7 +30,7 @@ async function getLocationObj(location) {
     const locationObj = await jsonData.location;
     return locationObj;
   } catch {
-    throw new Error('get location obj fails!');
+    console.log('get location obj fails!');
   }
 }
 
@@ -136,7 +136,6 @@ function createWeatherTextDiv(
 }
 
 function createWeatherComponent(mesureName, parent, imgSrc, title, valueUnit) {
-  // const humidityDiv = document.querySelector('[data-humidity]');
   const img = createWeatherIcon(imgSrc, 'info-container__icon');
 
   parent.appendChild(img);
@@ -177,24 +176,74 @@ function displayWindSpeed(obj) {
   );
 }
 
+function clearWeatherComponents() {
+  const humidityDiv = document.querySelector('[data-humidity]');
+  const windDiv = document.querySelector('[data-wind]');
+  humidityDiv.innerHTML = '';
+  windDiv.innerHTML = '';
+}
+
+function displayLocationInfo(obj) {
+  if (obj == null) return;
+  displayCity(obj);
+  displayCountry(obj);
+  displayCurrentDate(obj);
+  displayCurrentTime(obj);
+}
+
+function displayWeatherCondition(obj) {
+  if (obj == null) return;
+  displayWeatherConditionText(obj);
+  displayWeatherConditionIcon(obj);
+}
+
+function displayWeatherMeasures(obj) {
+  if (obj == null) return;
+  displayTemperature(obj);
+  displayHumidity(obj);
+  displayWindSpeed(obj);
+}
+
+function setDisplayInfoContainer(display) {
+  document.querySelector('[data-info-container]').style.display = display;
+}
+
+function displayNotFoundMsg() {
+  const msgDiv = document.querySelector('[data-error-msg-container]');
+  msgDiv.textContent = 'Data Not Found!';
+}
+
+function setDisplayNotFoundMsg(display) {
+  document.querySelector('[data-error-msg-container]').style.display = display;
+}
+
 const input = document.querySelector('[data-input]');
 
 async function globalEventsHandler(e) {
   e.preventDefault();
-  const current = await getCurrentObj(input.value);
-  const location = await getLocationObj(input.value);
-  console.log(current);
-  console.log(location);
+  if (input.value !== '') {
+    const current = await getCurrentObj(input.value);
+    const location = await getLocationObj(input.value);
+    console.log(current);
+    console.log(location);
+    clearWeatherComponents();
 
-  displayCity(location);
-  displayCountry(location);
-  displayCurrentDate(location);
-  displayCurrentTime(location);
-  displayWeatherConditionText(current);
-  displayWeatherConditionIcon(current);
-  displayTemperature(current);
-  displayHumidity(current);
-  displayWindSpeed(current);
+    displayLocationInfo(location);
+
+    displayWeatherCondition(current);
+
+    displayWeatherMeasures(current);
+
+    if (current != null || location != null) {
+      setDisplayNotFoundMsg('none');
+      setDisplayInfoContainer('grid');
+    } else {
+      console.log('entered');
+      setDisplayInfoContainer('none');
+      displayNotFoundMsg();
+      setDisplayNotFoundMsg('block');
+    }
+  }
 }
 
 const submitBtn = document.querySelector('[data-submit-button]');
