@@ -8,5 +8,27 @@
     <script src="index.js" defer></script>
     <title>Weather App</title>
   </head>
-  <body></body>
+  <body>
+    <h1>Weather App</h1>
+    <form action="" class="form">
+      <div class="location">
+        <label for="location" class="location__label"
+          >enter your location:</label
+        >
+        <input type="text" id="location" data-input class="location__input" />
+      </div>
+      <button type="submit" data-submit-button class="location__btn">
+        Search
+      </button>
+    </form>
+    <div class="info-container">
+      <div class="info-container__city" data-city></div>
+      <div class="info-container__country" data-country></div>
+      <div class="info-container__date" data-date></div>
+      <div class="info-container__time" data-time></div>
+      <div class="info-container__condition" data-condition>
+        <p class="info-container__condition-text" data-condition-text></p>
+      </div>
+    </div>
+  </body>
 </html>
