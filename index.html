@@ -9,25 +9,29 @@
     <title>Weather App</title>
   </head>
   <body>
-    <h1>Weather App</h1>
+    <h1 class="header">Weather App</h1>
     <form action="" class="form">
-      <div class="location">
-        <label for="location" class="location__label"
-          >enter your location:</label
-        >
-        <input type="text" id="location" data-input class="location__input" />
+      <div class="form__location">
+        <label for="location" class="form__label">enter your location:</label>
+        <input type="text" id="location" data-input class="form__input" />
       </div>
-      <button type="submit" data-submit-button class="location__btn">
-        Search
-      </button>
+      <button type="submit" data-submit-button class="form__btn">Search</button>
     </form>
+
     <div class="info-container">
-      <div class="info-container__city" data-city></div>
-      <div class="info-container__country" data-country></div>
-      <div class="info-container__date" data-date></div>
-      <div class="info-container__time" data-time></div>
+      <div class="info-container__location">
+        <div class="info-container__city" data-city></div>
+        <div class="info-container__country" data-country></div>
+        <div class="info-container__date" data-date></div>
+        <div class="info-container__time" data-time></div>
+      </div>
       <div class="info-container__condition" data-condition>
         <p class="info-container__condition-text" data-condition-text></p>
+      </div>
+      <div class="info-container__measures">
+        <div class="info-container__temperature" data-temperature></div>
+        <div class="info-container__humidity" data-humidity></div>
+        <div class="info-container__wind" data-wind></div>
       </div>
     </div>
   </body>

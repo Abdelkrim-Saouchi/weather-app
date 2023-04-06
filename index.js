@@ -98,6 +98,85 @@ function displayWeatherConditionIcon(obj) {
   img.src = ConditionIcon;
 }
 
+function displayTemperature(obj) {
+  const temperatureDiv = document.querySelector('[data-temperature]');
+  const tempInC = obj.temp_c;
+  temperatureDiv.textContent = `${tempInC} °C`;
+}
+
+function createWeatherIcon(src, clss) {
+  const img = document.createElement('img');
+  img.src = src;
+  img.classList.add(clss);
+  return img;
+}
+
+function createWeatherTextDiv(
+  mesureName,
+  textDivClass,
+  titleClass,
+  title,
+  valueParaClass,
+  valueUnit
+) {
+  const textDiv = document.createElement('div');
+  textDiv.classList.add(textDivClass);
+
+  const textTitle = document.createElement('p');
+  textTitle.classList.add(titleClass);
+  textTitle.textContent = title;
+  textDiv.appendChild(textTitle);
+
+  const valuePara = document.createElement('p');
+  valuePara.classList.add(valueParaClass);
+  valuePara.textContent = `${mesureName} ${valueUnit}`;
+  textDiv.appendChild(valuePara);
+
+  return textDiv;
+}
+
+function createWeatherComponent(mesureName, parent, imgSrc, title, valueUnit) {
+  // const humidityDiv = document.querySelector('[data-humidity]');
+  const img = createWeatherIcon(imgSrc, 'info-container__icon');
+
+  parent.appendChild(img);
+
+  const textDiv = createWeatherTextDiv(
+    mesureName,
+    'info-container__text',
+    'info-container__title',
+    title,
+    'info-container__value',
+    valueUnit
+  );
+
+  parent.appendChild(textDiv);
+}
+
+function displayHumidity(obj) {
+  const humidityDiv = document.querySelector('[data-humidity]');
+  const { humidity } = obj;
+  createWeatherComponent(
+    humidity,
+    humidityDiv,
+    './assets/droplets-01-svgrepo-com.svg',
+    'Humidity',
+    '%'
+  );
+}
+
+function displayWindSpeed(obj) {
+  const windDiv = document.querySelector('[data-wind]');
+  const windSpeed = obj.wind_kph;
+  createWeatherComponent(
+    windSpeed,
+    windDiv,
+    './assets/wind-svgrepo-com.svg',
+    'Wind Speed',
+    'Km/h'
+  );
+}
+
 const input = document.querySelector('[data-input]');
 
 async function globalEventsHandler(e) {
@@ -113,6 +192,9 @@ async function globalEventsHandler(e) {
   displayCurrentTime(location);
   displayWeatherConditionText(current);
   displayWeatherConditionIcon(current);
+  displayTemperature(current);
+  displayHumidity(current);
+  displayWindSpeed(current);
 }
 
 const submitBtn = document.querySelector('[data-submit-button]');
