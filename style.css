@@ -158,3 +158,35 @@ body {
   border: 2px solid var(--white);
   border-radius: 12px;
 }
+
+.loader {
+  margin-top: var(--spacing);
+  position: relative;
+}
+
+.loader::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 35%;
+
+  border: 6px solid var(--white);
+  border-top-color: var(--primary-color-200);
+  border-radius: 50%;
+  animation: loading 500ms ease-in-out infinite;
+}
+
+.loader--hidden {
+  display: none;
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

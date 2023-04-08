@@ -14,23 +14,25 @@ async function getJsonData(location) {
   }
 }
 
+// eslint-disable-next-line consistent-return
 async function getCurrentObj(location) {
   try {
     const jsonData = await getJsonData(location);
     const currentObj = await jsonData.current;
     return currentObj;
   } catch {
-    console.log('get current obj fails!');
+    console.log('get current obj fails!'); // console log here to stop error propagation throw promises
   }
 }
 
+// eslint-disable-next-line consistent-return
 async function getLocationObj(location) {
   try {
     const jsonData = await getJsonData(location);
     const locationObj = await jsonData.location;
     return locationObj;
   } catch {
-    console.log('get location obj fails!');
+    console.log('get location obj fails!'); // console log here to stop error propagation throw promises
   }
 }
 
@@ -217,15 +219,19 @@ function setDisplayNotFoundMsg(display) {
   document.querySelector('[data-error-msg-container]').style.display = display;
 }
 
+function displayLoaderComponent() {
+  document.querySelector('[data-loader]').classList.toggle('loader--hidden');
+}
+
 const input = document.querySelector('[data-input]');
 
-async function globalEventsHandler(e) {
+async function globalHandler(e) {
   e.preventDefault();
   if (input.value !== '') {
+    setDisplayInfoContainer('none');
+    displayLoaderComponent();
     const current = await getCurrentObj(input.value);
     const location = await getLocationObj(input.value);
-    console.log(current);
-    console.log(location);
     clearWeatherComponents();
 
     displayLocationInfo(location);
@@ -235,10 +241,11 @@ async function globalEventsHandler(e) {
     displayWeatherMeasures(current);
 
     if (current != null || location != null) {
+      displayLoaderComponent();
       setDisplayNotFoundMsg('none');
       setDisplayInfoContainer('grid');
     } else {
-      console.log('entered');
+      displayLoaderComponent();
       setDisplayInfoContainer('none');
       displayNotFoundMsg();
       setDisplayNotFoundMsg('block');
@@ -247,4 +254,4 @@ async function globalEventsHandler(e) {
 }
 
 const submitBtn = document.querySelector('[data-submit-button]');
-submitBtn.addEventListener('click', globalEventsHandler);
+submitBtn.addEventListener('click', globalHandler);
