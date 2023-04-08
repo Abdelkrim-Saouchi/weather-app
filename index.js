@@ -1,7 +1,7 @@
 async function getJsonData(location) {
   try {
     const response = await fetch(
-      `http://api.weatherapi.com/v1/current.json?key=1486a96373104c46bc6142904230304&q=${location}`,
+      `https://api.weatherapi.com/v1/current.json?key=1486a96373104c46bc6142904230304&q=${location}`,
       { mode: 'cors' }
     );
     if (!response.ok) {
