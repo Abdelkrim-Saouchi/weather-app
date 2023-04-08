@@ -112,7 +112,7 @@ function createWeatherIcon(src, clss) {
 }
 
 function createWeatherTextDiv(
-  mesureName,
+  measureName,
   textDivClass,
   titleClass,
   title,
@@ -129,19 +129,19 @@ function createWeatherTextDiv(
 
   const valuePara = document.createElement('p');
   valuePara.classList.add(valueParaClass);
-  valuePara.textContent = `${mesureName} ${valueUnit}`;
+  valuePara.textContent = `${measureName} ${valueUnit}`;
   textDiv.appendChild(valuePara);
 
   return textDiv;
 }
 
-function createWeatherComponent(mesureName, parent, imgSrc, title, valueUnit) {
+function createWeatherComponent(measureName, parent, imgSrc, title, valueUnit) {
   const img = createWeatherIcon(imgSrc, 'info-container__icon');
 
   parent.appendChild(img);
 
   const textDiv = createWeatherTextDiv(
-    mesureName,
+    measureName,
     'info-container__text',
     'info-container__title',
     title,
