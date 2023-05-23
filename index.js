@@ -14,25 +14,23 @@ async function getJsonData(location) {
   }
 }
 
-// eslint-disable-next-line consistent-return
-async function getCurrentObj(location) {
+async function getCurrent(location) {
   try {
     const jsonData = await getJsonData(location);
     const currentObj = await jsonData.current;
     return currentObj;
   } catch {
-    console.log('get current obj fails!'); // console log here to stop error propagation throw promises
+    return null; // to stop error propagation through promises
   }
 }
 
-// eslint-disable-next-line consistent-return
-async function getLocationObj(location) {
+async function getLocation(location) {
   try {
     const jsonData = await getJsonData(location);
     const locationObj = await jsonData.location;
     return locationObj;
   } catch {
-    console.log('get location obj fails!'); // console log here to stop error propagation throw promises
+    return null; // to stop error propagation through promises
   }
 }
 
@@ -48,7 +46,7 @@ function displayCountry(obj) {
   countryDiv.textContent = country;
 }
 
-function getFormatedDate(dateStr) {
+function getFormattedDate(dateStr) {
   const date = new Date(dateStr);
   const options = {
     weekday: 'long',
@@ -71,7 +69,7 @@ function getCurrentTime(dateStr) {
 function displayCurrentDate(obj) {
   const dateDiv = document.querySelector('[data-date]');
   const dateStr = obj.localtime;
-  const dateInString = getFormatedDate(dateStr);
+  const dateInString = getFormattedDate(dateStr);
   dateDiv.textContent = dateInString;
 }
 
@@ -106,10 +104,10 @@ function displayTemperature(obj) {
   temperatureDiv.textContent = `${tempInC} °C`;
 }
 
-function createWeatherIcon(src, clss) {
+function createWeatherIcon(src, className) {
   const img = document.createElement('img');
   img.src = src;
-  img.classList.add(clss);
+  img.classList.add(className);
   return img;
 }
 
@@ -230,26 +228,23 @@ async function globalHandler(e) {
   if (input.value !== '') {
     setDisplayInfoContainer('none');
     displayLoaderComponent();
-    const current = await getCurrentObj(input.value);
-    const location = await getLocationObj(input.value);
+    const current = await getCurrent(input.value);
+    const location = await getLocation(input.value);
     clearWeatherComponents();
 
-    displayLocationInfo(location);
-
-    displayWeatherCondition(current);
-
-    displayWeatherMeasures(current);
-
-    if (current != null || location != null) {
-      displayLoaderComponent();
-      setDisplayNotFoundMsg('none');
-      setDisplayInfoContainer('grid');
-    } else {
+    if (!current || !location) {
       displayLoaderComponent();
       setDisplayInfoContainer('none');
       displayNotFoundMsg();
       setDisplayNotFoundMsg('block');
+      return;
     }
+    displayLoaderComponent();
+    displayLocationInfo(location);
+    displayWeatherCondition(current);
+    displayWeatherMeasures(current);
+    setDisplayNotFoundMsg('none');
+    setDisplayInfoContainer('grid');
   }
 }
 
