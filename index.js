@@ -53,7 +53,7 @@ function getFormattedDate(dateStr) {
   return formattedDate;
 }
 
-function getCurrentTime(dateStr) {
+function getTime(dateStr) {
   const copyDate = dateStr;
   const timeStr = copyDate.split(' ')[1];
 
@@ -123,41 +123,111 @@ function setDisplayNotFoundMsg(display) {
   document.querySelector('[data-error-msg-container]').style.display = display;
 }
 
+function getInputValue() {
+  return input.value;
+}
+
+function getCity(obj) {
+  return obj.name;
+}
+
+function getCountry(obj) {
+  return obj.country;
+}
+function displayCurrentDate(date) {
+  const dateDiv = document.querySelector('[data-date]');
+  dateDiv.textContent = date;
+}
+
+function getCurrentDate(obj) {
+  const dateStr = obj.localtime;
+  return getFormattedDate(dateStr);
+}
+
+function getCurrentTime(obj) {
+  const dateStr = obj.localtime;
+  return getTime(dateStr);
+}
+
+function getWeatherConditionText(obj) {
+  return obj.condition.text;
+}
+
+function getWeatherConditionIcon(obj) {
+  return obj.condition.icon;
+}
+
+function getTemperature(obj) {
+  return obj.temp_c;
+}
+
+function getHumidity(obj) {
+  return obj.humidity;
+}
+
+function getWindSpeed(obj) {
+  return obj.wind_kph;
+}
+
+function getLocationInfo(obj) {
+  if (!obj) return null;
+  const city = getCity(obj);
+  const country = getCountry(obj);
+  const currentDate = getCurrentDate(obj);
+  const currentTime = getCurrentTime(obj);
+  return {
+    city,
+    country,
+    currentDate,
+    currentTime,
+  };
+}
+
+function getWeatherCondition(obj) {
+  if (!obj) return null;
+  const weatherConditionText = getWeatherConditionText(obj);
+  const weatherConditionIcon = getWeatherConditionIcon(obj);
+  return {
+    weatherConditionText,
+    weatherConditionIcon,
+  };
+}
+
+function getWeatherMeasures(obj) {
+  if (!obj) return null;
+  const temperature = getTemperature(obj);
+  const humidity = getHumidity(obj);
+  const windSpeed = getWindSpeed(obj);
+
+  return {
+    temperature,
+    humidity,
+    windSpeed,
+  };
+}
+
 // Display functions
-function displayCity(obj) {
+function displayCity(cityName) {
   const cityDiv = document.querySelector('[data-city]');
-  const cityName = obj.name;
   cityDiv.textContent = cityName;
 }
 
-function displayCountry(obj) {
+function displayCountry(country) {
   const countryDiv = document.querySelector('[data-country]');
-  const { country } = obj;
   countryDiv.textContent = country;
 }
 
-function displayCurrentDate(obj) {
-  const dateDiv = document.querySelector('[data-date]');
-  const dateStr = obj.localtime;
-  const dateInString = getFormattedDate(dateStr);
-  dateDiv.textContent = dateInString;
-}
-
-function displayCurrentTime(obj) {
+function displayCurrentTime(time) {
   const timeDiv = document.querySelector('[data-time]');
-  const dateStr = obj.localtime;
-  const timeInString = getCurrentTime(dateStr);
-  timeDiv.textContent = timeInString;
+  timeDiv.textContent = time;
 }
 
-function displayWeatherConditionText(obj) {
+function displayWeatherConditionText(conditionText) {
   const para = document.querySelector('[data-condition-text]');
-  const conditionText = obj.condition.text;
   para.textContent = conditionText;
 }
 
-function displayWeatherConditionIcon(obj) {
-  const ConditionIcon = obj.condition.icon;
+function displayWeatherConditionIcon(ConditionIcon) {
   const conditionDiv = document.querySelector('[data-condition]');
   let img = conditionDiv.querySelector('img');
   if (img == null) {
@@ -168,15 +238,13 @@ function displayWeatherConditionIcon(obj) {
   img.src = ConditionIcon;
 }
 
-function displayTemperature(obj) {
+function displayTemperature(tempInC) {
   const temperatureDiv = document.querySelector('[data-temperature]');
-  const tempInC = obj.temp_c;
   temperatureDiv.textContent = `${tempInC} °C`;
 }
 
-function displayHumidity(obj) {
+function displayHumidity(humidity) {
   const humidityDiv = document.querySelector('[data-humidity]');
-  const { humidity } = obj;
   createWeatherComponent(
     humidity,
     humidityDiv,
@@ -186,9 +254,8 @@ function displayHumidity(obj) {
   );
 }
 
-function displayWindSpeed(obj) {
+function displayWindSpeed(windSpeed) {
   const windDiv = document.querySelector('[data-wind]');
-  const windSpeed = obj.wind_kph;
   createWeatherComponent(
     windSpeed,
     windDiv,
@@ -198,25 +265,28 @@ function displayWindSpeed(obj) {
   );
 }
 
-function displayLocationInfo(obj) {
-  if (obj == null) return;
-  displayCity(obj);
-  displayCountry(obj);
-  displayCurrentDate(obj);
-  displayCurrentTime(obj);
-}
+function displayData(data) {
+  const {
+    city,
+    country,
+    currentDate,
+    currentTime,
+    weatherConditionText,
+    weatherConditionIcon,
+    temperature,
+    humidity,
+    windSpeed,
+  } = data;
 
-function displayWeatherCondition(obj) {
-  if (obj == null) return;
-  displayWeatherConditionText(obj);
-  displayWeatherConditionIcon(obj);
-}
-
-function displayWeatherMeasures(obj) {
-  if (obj == null) return;
-  displayTemperature(obj);
-  displayHumidity(obj);
-  displayWindSpeed(obj);
+  displayCity(city);
+  displayCountry(country);
+  displayCurrentDate(currentDate);
+  displayCurrentTime(currentTime);
+  displayWeatherConditionText(weatherConditionText);
+  displayWeatherConditionIcon(weatherConditionIcon);
+  displayTemperature(temperature);
+  displayHumidity(humidity);
+  displayWindSpeed(windSpeed);
 }
 
 function displayNotFoundMsg() {
@@ -231,11 +301,12 @@ function displayLoaderComponent() {
 // Event handler functions
 async function globalHandler(e) {
   e.preventDefault();
-  if (input.value !== '') {
+  const searchInput = getInputValue();
+  if (searchInput !== '') {
     setDisplayInfoContainer('none');
     displayLoaderComponent();
-    const current = await getCurrent(input.value);
-    const location = await getLocation(input.value);
+    const current = await getCurrent(searchInput);
+    const location = await getLocation(searchInput);
     clearWeatherComponents();
 
     if (!current || !location) {
@@ -246,9 +317,17 @@ async function globalHandler(e) {
       return;
     }
     displayLoaderComponent();
-    displayLocationInfo(location);
-    displayWeatherCondition(current);
-    displayWeatherMeasures(current);
+    const locationInfo = getLocationInfo(location);
+    const weatherCondition = getWeatherCondition(current);
+    const weatherMeasures = getWeatherMeasures(current);
+
+    const data = {
+      ...locationInfo,
+      ...weatherCondition,
+      ...weatherMeasures,
+    };
+
+    displayData(data);
     setDisplayNotFoundMsg('none');
     setDisplayInfoContainer('grid');
   }
