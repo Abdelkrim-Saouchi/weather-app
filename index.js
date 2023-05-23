@@ -1,3 +1,8 @@
+// Global variables
+const input = document.querySelector('[data-input]');
+const submitBtn = document.querySelector('[data-submit-button]');
+
+// API functions
 async function getJsonData(location) {
   try {
     const response = await fetch(
@@ -34,18 +39,7 @@ async function getLocation(location) {
   }
 }
 
-function displayCity(obj) {
-  const cityDiv = document.querySelector('[data-city]');
-  const cityName = obj.name;
-  cityDiv.textContent = cityName;
-}
-
-function displayCountry(obj) {
-  const countryDiv = document.querySelector('[data-country]');
-  const { country } = obj;
-  countryDiv.textContent = country;
-}
-
+// Utility functions
 function getFormattedDate(dateStr) {
   const date = new Date(dateStr);
   const options = {
@@ -64,44 +58,6 @@ function getCurrentTime(dateStr) {
   const timeStr = copyDate.split(' ')[1];
 
   return timeStr;
-}
-
-function displayCurrentDate(obj) {
-  const dateDiv = document.querySelector('[data-date]');
-  const dateStr = obj.localtime;
-  const dateInString = getFormattedDate(dateStr);
-  dateDiv.textContent = dateInString;
-}
-
-function displayCurrentTime(obj) {
-  const timeDiv = document.querySelector('[data-time]');
-  const dateStr = obj.localtime;
-  const timeInString = getCurrentTime(dateStr);
-  timeDiv.textContent = timeInString;
-}
-
-function displayWeatherConditionText(obj) {
-  const para = document.querySelector('[data-condition-text]');
-  const conditionText = obj.condition.text;
-  para.textContent = conditionText;
-}
-
-function displayWeatherConditionIcon(obj) {
-  const ConditionIcon = obj.condition.icon;
-  const conditionDiv = document.querySelector('[data-condition]');
-  let img = conditionDiv.querySelector('img');
-  if (img == null) {
-    img = document.createElement('img');
-    img.classList.add('info-container__condition-icon');
-    conditionDiv.appendChild(img);
-  }
-  img.src = ConditionIcon;
-}
-
-function displayTemperature(obj) {
-  const temperatureDiv = document.querySelector('[data-temperature]');
-  const tempInC = obj.temp_c;
-  temperatureDiv.textContent = `${tempInC} °C`;
 }
 
 function createWeatherIcon(src, className) {
@@ -152,6 +108,72 @@ function createWeatherComponent(measureName, parent, imgSrc, title, valueUnit) {
   parent.appendChild(textDiv);
 }
 
+function clearWeatherComponents() {
+  const humidityDiv = document.querySelector('[data-humidity]');
+  const windDiv = document.querySelector('[data-wind]');
+  humidityDiv.innerHTML = '';
+  windDiv.innerHTML = '';
+}
+
+function setDisplayInfoContainer(display) {
+  document.querySelector('[data-info-container]').style.display = display;
+}
+
+function setDisplayNotFoundMsg(display) {
+  document.querySelector('[data-error-msg-container]').style.display = display;
+}
+
+// Display functions
+function displayCity(obj) {
+  const cityDiv = document.querySelector('[data-city]');
+  const cityName = obj.name;
+  cityDiv.textContent = cityName;
+}
+
+function displayCountry(obj) {
+  const countryDiv = document.querySelector('[data-country]');
+  const { country } = obj;
+  countryDiv.textContent = country;
+}
+
+function displayCurrentDate(obj) {
+  const dateDiv = document.querySelector('[data-date]');
+  const dateStr = obj.localtime;
+  const dateInString = getFormattedDate(dateStr);
+  dateDiv.textContent = dateInString;
+}
+
+function displayCurrentTime(obj) {
+  const timeDiv = document.querySelector('[data-time]');
+  const dateStr = obj.localtime;
+  const timeInString = getCurrentTime(dateStr);
+  timeDiv.textContent = timeInString;
+}
+
+function displayWeatherConditionText(obj) {
+  const para = document.querySelector('[data-condition-text]');
+  const conditionText = obj.condition.text;
+  para.textContent = conditionText;
+}
+
+function displayWeatherConditionIcon(obj) {
+  const ConditionIcon = obj.condition.icon;
+  const conditionDiv = document.querySelector('[data-condition]');
+  let img = conditionDiv.querySelector('img');
+  if (img == null) {
+    img = document.createElement('img');
+    img.classList.add('info-container__condition-icon');
+    conditionDiv.appendChild(img);
+  }
+  img.src = ConditionIcon;
+}
+
+function displayTemperature(obj) {
+  const temperatureDiv = document.querySelector('[data-temperature]');
+  const tempInC = obj.temp_c;
+  temperatureDiv.textContent = `${tempInC} °C`;
+}
+
 function displayHumidity(obj) {
   const humidityDiv = document.querySelector('[data-humidity]');
   const { humidity } = obj;
@@ -176,13 +198,6 @@ function displayWindSpeed(obj) {
   );
 }
 
-function clearWeatherComponents() {
-  const humidityDiv = document.querySelector('[data-humidity]');
-  const windDiv = document.querySelector('[data-wind]');
-  humidityDiv.innerHTML = '';
-  windDiv.innerHTML = '';
-}
-
 function displayLocationInfo(obj) {
   if (obj == null) return;
   displayCity(obj);
@@ -204,25 +219,16 @@ function displayWeatherMeasures(obj) {
   displayWindSpeed(obj);
 }
 
-function setDisplayInfoContainer(display) {
-  document.querySelector('[data-info-container]').style.display = display;
-}
-
 function displayNotFoundMsg() {
   const msgDiv = document.querySelector('[data-error-msg-container]');
   msgDiv.textContent = 'Data Not Found!';
-}
-
-function setDisplayNotFoundMsg(display) {
-  document.querySelector('[data-error-msg-container]').style.display = display;
 }
 
 function displayLoaderComponent() {
   document.querySelector('[data-loader]').classList.toggle('loader--hidden');
 }
 
-const input = document.querySelector('[data-input]');
-
+// Event handler functions
 async function globalHandler(e) {
   e.preventDefault();
   if (input.value !== '') {
@@ -248,5 +254,5 @@ async function globalHandler(e) {
   }
 }
 
-const submitBtn = document.querySelector('[data-submit-button]');
+// Event listeners
 submitBtn.addEventListener('click', globalHandler);
