@@ -9,4 +9,4 @@ this app from 'The Odin Project' curriculum.
 3. using promises by async and await.
 4. some clean code tips.
 
-live demo [here](https://karim-saou.github.io/weather-app/).
+live demo [here](https://abdelkrim-saouchi.github.io/weather-app/).
